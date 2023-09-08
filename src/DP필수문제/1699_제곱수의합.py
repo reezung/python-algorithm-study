@@ -1,15 +1,18 @@
 '''
-i - j**2로 업데이트해주어야 시간초과가 나지 않음.
-안쪽루프를 n번이 아닌 i번만 돌아도 되기 때문
+n을 제곱수의 합으로 표현할 때, 그 항의 최소 개수
+dp[i+j**2] = min(dp[i] + 1, dp[i-j**2]) 하면 시간초과 발생
+할당하는데 시간이 추가로 들기 때문인듯
 '''
+INF = int(1e9)
 n = int(input())
-dp = [i for i in range(n+1)]
+dp = [INF] * (n+1)
+dp[0] = 0
 
 for i in range(n+1):
-    for j in range(1, i):
-        if j**2 > i:
+    for j in range(1, n+1):
+        if i+j**2 > n:
             break
-        if dp[i] > dp[i-j**2] + 1:
-            dp[i] = dp[i-j**2] + 1
+        if dp[i+j**2] > dp[i] + 1:
+            dp[i+j**2] = dp[i] + 1
 
 print(dp[n])
