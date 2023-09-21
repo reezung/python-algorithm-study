@@ -1,6 +1,7 @@
 '''
 bfs에서 방문 체크는 '큐에 삽입하는 순간' 해야함
 '''
+from collections import deque
 n, m = map(int, input().split())
 board = [list(input()) for _ in range(n)]
 
@@ -27,11 +28,10 @@ def move(x, y, d):
 
 
 def bfs(rx, ry, bx, by):
-    q = [(rx, ry, bx, by, 1)]
+    q = deque([(rx, ry, bx, by, 1)])
     visited = [(rx, ry, bx, by)]    # 파란 구슬의 위치도 방문 체크에 포함해야함
     while q:
-        rx, ry, bx, by, cnt = q[0]
-        q.remove(q[0])
+        rx, ry, bx, by, cnt = q.popleft()
 
         if cnt > 10:
             break
