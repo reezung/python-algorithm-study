@@ -1,8 +1,9 @@
 n, m = map(int, input().split())
-s = []
+s = []  # dfs 외부에 선언
 
 
 def dfs():
+    # 종료조건
     if len(s) == m:
         for i in s:
             print(i, end=" ")
