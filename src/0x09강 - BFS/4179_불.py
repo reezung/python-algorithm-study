@@ -13,59 +13,37 @@
 from collections import deque
 
 r, c = map(int, input().split())
-graph = [input() for _ in range(r)]
-visited = [[0] * c for _ in range(r)]
-
-F, J = [], []
-
-
-def is_edge(i, j):
-    return i == 0 or i == r - 1 or j == 0 or j == c - 1
+graph = [list(input()) for _ in range(r)]
 
 
 def bfs():
+    global j
     q = deque()
-    # F -> J 순으로 bfs
-    for f in F:
-        q.append(f)
-    q.append(J)
-
+    for x in range(r):
+        for y in range(c):
+            if graph[x][y] == 'J':
+                j = (x, y, 1)
+            elif graph[x][y] == 'F': # 불이 여러개일 수 있음
+                q.append((x, y, -1))
+    q.append(j) # F -> J 순으로 bfs
     dx = [-1, 1, 0, 0]
     dy = [0, 0, -1, 1]
     while q:
-        x, y, t = q.popleft()
+        x, y, cnt = q.popleft()
+        if cnt != -1 and (x in [0, r - 1] or y in [0, c - 1]):
+            print(cnt)
+            exit(0)
         for i in range(4):
             nx = x + dx[i]
             ny = y + dy[i]
             if 0 <= nx < r and 0 <= ny < c:
-                if t == -1:
-                    if visited[nx][ny] >= 0:    # 벽이 아니면 불이 번짐 (J가 이미 방문한 공간 포함)
-                        q.append([nx, ny, -1])
-                        visited[nx][ny] = -1
-                else:
-                    if visited[nx][ny] == 0:
-                        q.append([nx, ny, t + 1])
-                        visited[nx][ny] = 1
+                if cnt == -1 and graph[nx][ny] not in ['#', 'F']:
+                    q.append((nx, ny, -1))
+                    graph[nx][ny] = 'F'
+                elif cnt > -1 and graph[nx][ny] == '.':
+                    q.append((nx, ny, cnt + 1))
+                    graph[nx][ny] = 'J'
 
-                        if is_edge(nx, ny):
-                            print(t + 1)
-                            exit(0)
-
-
-for i in range(r):
-    for j in range(c):
-        if graph[i][j] != '.':
-            if graph[i][j] == 'F':
-                F.append([i, j, -1])
-                visited[i][j] = -1  # F 번짐
-            elif graph[i][j] == 'J':
-                if is_edge(i, j):   # J가 이미 가장자리에 위치 => 1 출력 후 exit
-                    print(1)
-                    exit(0)
-                J = [i, j, 1]
-                visited[i][j] = 1   # J 방문
-            else:
-                visited[i][j] = -2  # 벽
 
 bfs()
 print("IMPOSSIBLE")
