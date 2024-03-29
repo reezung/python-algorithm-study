@@ -9,7 +9,7 @@
 4.  정렬
     (1) vector: sort(arr.begin(), arr.end());
     (2) 배열: sort(arr, arr+MAX);
-5.  vector: push_back()
+5.  vector: push_back(), pop_back()
 6.  queue: push(), pop(), push()
 7.  pair<int, int> a = {x, y};
        -> a.first, a.second
