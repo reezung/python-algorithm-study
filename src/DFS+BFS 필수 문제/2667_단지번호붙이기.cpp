@@ -16,6 +16,7 @@
 8.  string: 내부 값 변경 가능
 9.  cin >> value;
     cout << value << endl;
+10. 라인 단위로 입력받고 싶다면, getline(cin, value);
 
 */
 #include<iostream>
