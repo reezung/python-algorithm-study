@@ -1,47 +1,38 @@
-from collections import deque
-
+'''
+사과를 먹였으면, apple 배열에서 해당 사과를 제거해주기!
+'''
 n = int(input())
 k = int(input())
-apples = [tuple(map(int, input().split())) for _ in range(k)]
+apple = [tuple(map(int, input().split())) for _ in range(k)]
 l = int(input())
-
-dx = [0, 1, 0, -1]
-dy = [1, 0, -1, 0]
-di = dict()
-
-for i in range(l):
+rotation = dict()
+for _ in range(l):
     x, c = input().split()
-    if c == 'D':
-        di[int(x)] = 1  # 오른쪽 회전(D): (i+1)%4
+    rotation[int(x)] = -1 if c == 'L' else 1
+
+dx = [0, 1, 0, -1]  # +1 -> 오른쪽 90도, -1 -> 왼쪽 90도
+dy = [1, 0, -1, 0]
+
+t = 0
+d = 0
+snake = [(1, 1)]
+
+while True:
+    t += 1
+    nx = snake[0][0] + dx[d]
+    ny = snake[0][1] + dy[d]
+
+    if (nx, ny) in snake or not (1 <= nx <= n and 1 <= ny <= n):
+        print(t)
+        break
+
+    if (nx, ny) not in apple:
+        snake.pop()
     else:
-        di[int(x)] = -1 # 왼쪽 회전(L): (i-1)%4
+        apple.remove((nx, ny))
 
+    if t in rotation:
+        d = (d + rotation[t]) % 4
 
-def move():
-    q = deque([(1, 1)]) # 뱀이 위치한 좌표
-    t = 0
-    i = 0
-    while True:
-        x, y = q[-1]
+    snake.insert(0, (nx, ny))
 
-        nx = x + dx[i]
-        ny = y + dy[i]
-        t += 1
-
-        if 0 < nx <= n and 0 < ny <= n:
-            if (nx, ny) in q:
-                return t
-
-            if (nx, ny) not in apples:
-                q.popleft() # 꼬리 삭제
-            else:
-                apples.remove((nx, ny)) # 사과 먹음
-
-            q.append((nx, ny))
-        else:
-            return t
-
-        i = (i + di[t]) % 4 if t in di.keys() else i
-
-
-print(move())

@@ -1,12 +1,19 @@
 n = int(input())
-a = list(map(int, input().split()))
+A = list(map(int, input().split()))
 b, c = map(int, input().split())
-ans = n
 
-for i in range(n):
-    if a[i] > b:
-        a[i] -= b
-        ans += a[i] // c
-        ans += 1 if a[i] % c > 0 else 0
 
+def ceil(num):
+    if num * 10 % 10 > 0:
+        return int(num) + 1
+    return int(num)
+
+
+ans = 0
+for a in A:
+    if a > 0:
+        ans += 1
+        a -= b
+    if a > 0:
+        ans += ceil(a / c)
 print(ans)

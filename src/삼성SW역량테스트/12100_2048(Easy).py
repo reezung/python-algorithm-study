@@ -1,65 +1,72 @@
 '''
 존재하는 블럭들만 move
 - 존재하는 블럭을 체크할 때, 행/열을 체크하는 순서가 i에 따라 달랐음
-- 블럭이 합쳐질 때까지 or 벽/합쳐질 수 없는 숫자를 만날 때까지 move
+- 이미 합쳐진 블럭을 한번 더 합치면 안됨
+- 완전탐색!
 '''
-from collections import deque
-import copy
-
 n = int(input())
 board = [list(map(int, input().split())) for _ in range(n)]
 
-
-def move(x, y, b, integrated, d):
-    dx = [-1, 1, 0, 0]
-    dy = [0, 0, -1, 1]
-    while 0 <= x + dx[d] < n and 0 <= y + dy[d] < n:
-        nx = x + dx[d]
-        ny = y + dy[d]
-        if b[nx][ny] == 0:
-            b[nx][ny] = b[x][y]
-            b[x][y] = 0
-            x = nx
-            y = ny
-        elif b[nx][ny] == b[x][y] and integrated[nx][ny] == 0:
-            b[nx][ny] *= 2
-            integrated[nx][ny] = 1
-            b[x][y] = 0
-        else:
-            return b
-    return b
+dx = [-1, 1, 0, 0]
+dy = [0, 0, -1, 1]
+range_x = [range(1, n), range(n - 2, -1, -1), range(n), range(n)]
+range_y = [range(n), range(n), range(1, n), range(n - 2, -1, -1)]
 
 
-def bfs(b):
-    q = deque([b, 0])
-    v = [b]
-    range_x = [range(n), range(n - 1, -1, -1), range(n), range(n)]
-    range_y = [range(n), range(n), range(n), range(n - 1, -1, -1)]
-
-    max_num = max(max(i) for i in b)
-    while q:
-        blocks = q.popleft()
-        cnt = q.popleft()
-        if cnt == 5:
-            break
-
-        for i in range(4):
-            b = copy.deepcopy(blocks)
-            integrated = [[0] * n for _ in range(n)]
-
-            for x in range_x[i]:
-                for y in range_y[i]:
-                    if b[x][y] != 0:
-                        move(x, y, b, integrated, i)
-            if b not in v:
-                q.append(b)
-                q.append(cnt + 1)
-                v.append(b)
-                t = max(max(i) for i in b)
-                if t > max_num:
-                    max_num = t
-
-    return max_num
+def deepcopy(list):
+    nlist = [[0] * n for _ in range(n)]
+    for x in range(n):
+        for y in range(n):
+            nlist[x][y] = list[x][y]
+    return nlist
 
 
-print(bfs(board))
+def move(blocks, i):
+    integrated = []
+    for x in range_x[i]:
+        for y in range_y[i]:
+            if blocks[x][y] != 0:
+                block = blocks[x][y]
+                blocks[x][y] = 0
+                nx = x
+                ny = y
+                while True:
+                    nx += dx[i]
+                    ny += dy[i]
+                    if not (0 <= nx < n and 0 <= ny < n):
+                        break
+                    if blocks[nx][ny] == block and (nx, ny) not in integrated:
+                        integrated.append((nx, ny))
+                        nx += dx[i]
+                        ny += dy[i]
+                        break
+                    elif blocks[nx][ny] != 0:
+                        break
+                nx -= dx[i]
+                ny -= dy[i]
+                blocks[nx][ny] += block
+
+
+def dfs(board, i):
+    global ans
+    nboard = deepcopy(board)
+    move(nboard, i)
+
+    if len(s) == 5:
+        ans = max(ans, max([max(b) for b in nboard]))
+        return
+
+    for i in range(4):
+        s.append(i)
+        dfs(nboard, i)
+        s.pop()
+
+
+s = []
+ans = 0
+for i in range(4):
+    s.append(i)
+    dfs(board, i)
+    s.pop()
+
+print(ans)

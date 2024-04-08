@@ -1,5 +1,6 @@
 '''
-bfs에서 방문 체크는 '큐에 삽입하는 순간' 해야함
+* bfs에서 방문 체크는 '큐에 삽입하는 순간' 해야함
+* (rx, ry, bx, by)를 node로 생각하기
 '''
 from collections import deque
 n, m = map(int, input().split())
