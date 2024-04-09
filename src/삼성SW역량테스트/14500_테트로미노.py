@@ -13,7 +13,7 @@ def dfs(x, y):
     if len(s) == 4:
         _ans = max(_ans, _sum)
         return
-
+    # 한붓그리기가 안되는 모양
     if len(s) == 3:
         if s[0][0] == s[1][0] == s[2][0]:
             for i in [-1, 1]:
@@ -35,7 +35,7 @@ def dfs(x, y):
                     dfs(nx, ny)
                     s.pop()
                     _sum -= board[nx][ny]
-
+    # 한붓그리기 모양
     for i in range(4):
         nx = x + dx[i]
         ny = y + dy[i]
